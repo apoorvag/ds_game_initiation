@@ -7,9 +7,9 @@ Created on Mar 29, 2013
 import itertools
 import math
 
-class cards:
+class cards_init:
     #created by the initiator to decide the number of cards to be generated
-    def __init__(self, nodeList):
+    def cards_init(self, nodeList):
         self.length = len(nodeList)
         self.noOfDecks = math.ceil(self.length/2)
         self.eachPlayerCards = math.floor((self.noOfDecks*52)/self.length)
@@ -31,3 +31,29 @@ class cards:
             i = i + 1;
         #At this point the deck is completely generated    
         return DECK;
+   
+#this structure holds the token, all available cards and no of cards to be chosen 
+class token_cards:
+
+    _token = None
+    _cards = None
+    _noOfCards = None
+    @property
+    def getToken(self):
+        return self._token
+    
+    @property
+    def cards(self):
+        return self._cards
+    
+    @property
+    def noOfCards(self):
+        return self._noOfCards
+
+#creates an object that has the hostId value and the corresponding buffer        
+class cardBuffer:
+    def __init__(self, host):
+        _hostId = host.id
+        _cardList = []
+        _cardList = None
+        

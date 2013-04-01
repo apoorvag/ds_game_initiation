@@ -9,28 +9,12 @@ import operator
 import RequestMessage
 import time
 import token
-
-#this buffer is going to store all responses
-
-class NodeID:
-    def __init__(self, ip_addr, port):
-        self.ip_addr = ip_addr
-        self.port = int(port)
-        self.id = 0;
-        
-    @property
-    def ip_addr(self):
-        return self._ip_addr
-    
-    @property
-    def port(self):
-        return self._port
+import cards
+import NodeIdentity
     
 Initiator = True
 
-nodeIdList = []
-
-#Input: List of nodes
+#Input: List of nodes of type NodeIdentity
 #Output: List of nodes with respective nodeIds generated 
 def genId(nodeIdList):
     collisionCheck = []
@@ -64,7 +48,7 @@ def findRelevantNode(Id , AckList):
                 return True
             
 #generate the token that is going to be passed around
-def tokenGen(nlist):
+def genToken(nlist):
     ipTOid =[]
     for node in nlist:
         ipTOid[node.id]= node.ip_addr
@@ -79,11 +63,20 @@ def StartInitiation(node, nodeList):
     d_port = 0
     ts = 0
     #generating the relevant token
-    token = tokenGen(nodeList)
-    #generating the initialization message wih token as the data
-    init = RequestMessage(getIp,dest,s_port,d_port,"TOKEN",ts,token)
+    tok = genToken(nodeList)
+    obj = cards.cards_init(nodeList)
+    cardSet = obj.gen_cards() 
+    tc = cards.token_cards()
+    tc.token = tok;
+    tc.cards = cardSet;
+    tc.noOfCards = obj.eachPlayerCards
+    destNode = nodeList[0]
+    tok.id = destNode.id
+    #generating the initialization message with token and deck of cards as the data
+    init = RequestMessage(getIp,destNode.ip_addr,s_port,destNode.port,"TOKEN",ts,tc)
     #send the token message to the lowest id node
     sendMsg(node.ip_addr,init)
+
             
 #input: List of nodes
 #function sends and confirms all nodes a list of ids
